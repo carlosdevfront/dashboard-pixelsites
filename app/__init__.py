@@ -1,7 +1,8 @@
 from flask import Flask
-from .routes import main  # Importamos las rutas definidas en routes.py
+from .routes import main
 
 def create_app():
-    app = Flask(__name__)   # Creamos la app
-    app.register_blueprint(main)  # Registramos las rutas (blueprint)
+    app = Flask(__name__)
+    app.register_blueprint(main)
     return app
+

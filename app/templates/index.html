@@ -5,9 +5,28 @@
     <title>Dashboard de Ventas</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
+
+<!-- Cargar Chart.js desde CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <body>
+
+
+
+<form method="get">
+    <label for="fecha_inicio">Desde:</label>
+    <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio or '' }}">
+
+    <label for="fecha_fin">Hasta:</label>
+    <input type="date" id="fecha_fin" name="fecha_fin" value="{{ fecha_fin or '' }}">
+
+    <button type="submit">Filtrar</button>
+</form>
+
+
+
+    <!--Inicio de tablas-->
     <h1>Dashboard de Ventas</h1>
-    
 
     <table>
         <thead>
@@ -36,6 +55,76 @@
 </tfoot>
 
 </table>
+
+
+<!--Canvas-->
+
+<canvas id="ventasChart" width="400" height="200"></canvas>
+
+
+    <!-- Script para el gráfico -->
+<script>
+  const ctx = document.getElementById('ventasChart').getContext('2d');
+  const ventasChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ labels|tojson }},
+      datasets: [{
+        label: 'Total de Ventas por Producto',
+        data: {{ data|tojson }},
+        backgroundColor: '#16a085',
+        borderColor: '#ffffff',
+        borderWidth: 1,
+        borderRadius: 8,
+        barThickness: 40
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#ffffff',
+            font: {
+              size: 14
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: '#1c1c1c',
+          titleColor: '#16a085',
+          bodyColor: '#ffffff',
+          borderColor: '#16a085',
+          borderWidth: 1
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: '#ffffff',
+            font: {
+              size: 12
+            }
+          },
+          grid: {
+            color: '#2a2a2a'
+          }
+        },
+        y: {
+          ticks: {
+            color: '#ffffff',
+            font: {
+              size: 12
+            }
+          },
+          grid: {
+            color: '#2a2a2a'
+          }
+        }
+      }
+    }
+  });
+</script>
 </body>
 </html>
 
