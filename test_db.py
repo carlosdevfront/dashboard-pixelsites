@@ -4,9 +4,9 @@ try:
     connection = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='',  # Déjalo vacío si no tienes clave
+        password='',  
         database='dashboard_ventas',
-        port=3307     # Cámbialo a 3306 si ese es el puerto correcto
+        port=3307     
     )
 
     if connection.is_connected():

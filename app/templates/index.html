@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Dashboard de Ventas</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Tipografía Montserrat desde Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+
 </head>
 
 <!-- Cargar Chart.js desde CDN -->
@@ -13,20 +16,18 @@
 
 
 
-<form method="get">
+    <!--Inicio de tablas-->
+    <h1>Dashboard de Ventas Pixelsites</h1>
+
+    <form method="POST" class="filtro-fechas">
     <label for="fecha_inicio">Desde:</label>
-    <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio or '' }}">
+    <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio }}">
 
     <label for="fecha_fin">Hasta:</label>
-    <input type="date" id="fecha_fin" name="fecha_fin" value="{{ fecha_fin or '' }}">
+    <input type="date" id="fecha_fin" name="fecha_fin" value="{{ fecha_fin }}">
 
     <button type="submit">Filtrar</button>
 </form>
-
-
-
-    <!--Inicio de tablas-->
-    <h1>Dashboard de Ventas</h1>
 
     <table>
         <thead>
@@ -35,6 +36,7 @@
                 <th>Cantidad</th>
                 <th>Precio</th>
                 <th>Total</th>
+                <th>Fecha</th>
             </tr>
         </thead>
     <tbody>
@@ -44,6 +46,7 @@
         <td>{{ venta['cantidad'] }}</td>
         <td>${{ "%.2f"|format(venta['precio']) }}</td>
         <td>${{ "%.2f"|format(venta['total']) }}</td>
+        <td>{{ venta.fecha }}</td>
     </tr>
     {% endfor %}
 </tbody>
@@ -56,44 +59,68 @@
 
 </table>
 
+<div class="stats">
+  <div class="stat-card">
+      <strong>Total de ventas:</strong> €{{ total_general }}
+  </div>
+  <div class="stat-card">
+      <strong>Productos vendidos:</strong> {{ total_productos_vendidos }}
+  </div>
+  <div class="stat-card">
+      <strong>Producto más vendido:</strong> {{ producto_mas_vendido }}
+  </div>
+  <div class="stat-card">
+      <strong>Producto con más ingresos:</strong> {{ producto_mayores_ingresos }}
+  </div>
+  <div class="stat-card">
+      <strong>Total de registros:</strong> {{ total_registros }}
+  </div>
+</div>
+
+
+<a href="{{ url_for('main.exportar') }}" class="btn-exportar">📥 Exportar a Excel</a>
+
+
 
 <!--Canvas-->
+<div class="chart-wrapper">
+    <canvas id="ventasChart"></canvas>
+</div>
 
-<canvas id="ventasChart" width="400" height="200"></canvas>
 
 
     <!-- Script para el gráfico -->
 <script>
   const ctx = document.getElementById('ventasChart').getContext('2d');
-  const ventasChart = new Chart(ctx, {
+  const chart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: {{ labels|tojson }},
       datasets: [{
-        label: 'Total de Ventas por Producto',
+        label: 'Ventas por producto',
         data: {{ data|tojson }},
         backgroundColor: '#16a085',
-        borderColor: '#ffffff',
-        borderWidth: 1,
-        borderRadius: 8,
-        barThickness: 40
+        borderRadius: 6, 
+        barThickness: 40, 
       }]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           labels: {
-            color: '#ffffff',
+            color: '#fff',
             font: {
+              family: 'Raleway',
               size: 14
             }
           }
         },
         tooltip: {
-          backgroundColor: '#1c1c1c',
+          backgroundColor: '#050505',
           titleColor: '#16a085',
-          bodyColor: '#ffffff',
+          bodyColor: '#fff',
           borderColor: '#16a085',
           borderWidth: 1
         }
@@ -101,30 +128,35 @@
       scales: {
         x: {
           ticks: {
-            color: '#ffffff',
+            color: '#fff',
             font: {
+              family: 'Raleway',
               size: 12
             }
           },
           grid: {
-            color: '#2a2a2a'
+            display: false
           }
         },
         y: {
           ticks: {
-            color: '#ffffff',
+            color: '#fff',
             font: {
+              family: 'Raleway',
               size: 12
             }
           },
           grid: {
-            color: '#2a2a2a'
+            color: 'rgba(255,255,255,0.1)' 
           }
         }
       }
     }
   });
 </script>
+
+
+
 </body>
 </html>
 
